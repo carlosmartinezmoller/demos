@@ -51,10 +51,3 @@ spec:
           initialDelaySeconds: 90
           periodSeconds: 300
           timeoutSeconds: 10
-        volumeMounts:
-        - name: schemareg-volume
-          mountPath: /var/lib/kafka
-      volumes:
-      - name: schemareg-volume
-        persistentVolumeClaim:
-          claimName: schemareg-claim
