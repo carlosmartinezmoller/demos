@@ -11,8 +11,11 @@ I decided not to use Operators neither. For example for Elasticsearch you may pr
 
 This scripts are good enough to start with a base infrastructure to test all kind of architectures and to grow from there.
 
+I installed all of this on a GKE cluster composed of 3 nodes, wich 2CPUs and 4G each.
+
 # Scripts included
 
+* 00: Scripts to downscale the GKE cluster - Use if you have limited resources and you want to deploy many things
 * 10: A very simple http Hello World to test your instrastructure
 * 20: A simple web server but creating all the architecture to make it visibe to the Web (Deployment, Service, Ingress)
 * 30: mysql
