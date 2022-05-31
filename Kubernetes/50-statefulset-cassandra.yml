@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: cassandra-statefulset
+spec:
+  selector:
+    matchLabels:
+      app: cassandra
+  replicas: 1
+  serviceName: cassandra-service
+  template:
+    metadata:
+      labels:
+        app: cassandra
+    spec:
+      containers:
+      - name: cassandra-container
+        image: cassandra:4.0.4
+        env:
+          - name: HEAP_NEWSIZE
+            valueFrom:
+              configMapKeyRef:
+                key: heap_newsize
+                name: cassandra-configmap
+          - name: MAX_HEAP_SIZE
+            valueFrom:
+              configMapKeyRef:
+                key: max_heap_size
+                name: cassandra-configmap
+          - name: CASSANDRA_CLUSTER_NAME
+            valueFrom:
+              configMapKeyRef:
+                key: cassandra_cluster_name
+                name: cassandra-configmap
+          - name: CASSANDRA_CQL_PORT_NUMBER
+            valueFrom:
+              configMapKeyRef:
+                key: cassandra_cql_port_number
+                name: cassandra-configmap
+          - name: CASSANDRA_DATACENTER
+            valueFrom:
+              configMapKeyRef:
+                key: cassandra_datacenter
+                name: cassandra-configmap
+          - name: CASSANDRA_USER
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: cassandra-secret
+          - name: CASSANDRA_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: cassandra-secret
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        ports:
+        - containerPort: 9042
+          name: cassandra-port
+        volumeMounts:
+        - name: cassandra-volume
+          mountPath: /var/lib/cassandra
+        resources:
+          requests:
+            memory: "300M"
+            cpu: "100m"
+          limits:
+            memory: "3G"
+            cpu: "2000m"
+        livenessProbe:
+          exec:
+            command: 
+             - bash 
+             - "-ec" 
+             - |
+               nodetool status | grep -E "^UN\\s+${POD_IP}"
+          initialDelaySeconds: 60
+          periodSeconds: 300
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command: 
+             - bash 
+             - "-ec" 
+             - |
+               nodetool status | grep -E "^UN\\s+${POD_IP}"
+          initialDelaySeconds: 30
+          periodSeconds: 300
+          timeoutSeconds: 10
+      volumes:
+      - name: cassandra-volume
+        persistentVolumeClaim:
+          claimName: cassandra-claim

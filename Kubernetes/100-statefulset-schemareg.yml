@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: schemareg-statefulset
+spec:
+  selector:
+    matchLabels:
+      app: schemareg
+  replicas: 1
+  serviceName: schemareg-service
+  template:
+    metadata:
+      labels:
+        app: schemareg
+    spec:
+      containers:
+      - name: schemareg-container
+        image: confluentinc/cp-schema-registry:5.4.1
+        env:
+          - name: SCHEMA_REGISTRY_HOST_NAME
+            valueFrom:
+              configMapKeyRef:
+                key: schema_registry_host_name
+                name: schemareg-configmap
+          - name: SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS
+            valueFrom:
+              configMapKeyRef:
+                key: schema_registry_kafkastore_bootstrap_servers
+                name: schemareg-configmap
+        ports:
+        - containerPort: 8081
+          name: schemareg-port
+        resources:
+          requests:
+            memory: "300M"
+            cpu: "100m"
+          limits:
+            memory: "2G"
+            cpu: "2000m"
+        livenessProbe:
+          tcpSocket:
+            port: schemareg-port
+          initialDelaySeconds: 90
+          periodSeconds: 300
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /v1/metadata/id
+            port: schemareg-port
+            scheme: HTTP
+          initialDelaySeconds: 90
+          periodSeconds: 300
+          timeoutSeconds: 10
+        volumeMounts:
+        - name: schemareg-volume
+          mountPath: /var/lib/kafka
+      volumes:
+      - name: schemareg-volume
+        persistentVolumeClaim:
+          claimName: schemareg-claim

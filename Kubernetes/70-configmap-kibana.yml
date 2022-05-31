@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kibana-configmap
+data:
+# All valid
+#  elasticsearch_hosts: "http://elastic-statefulset-0.elastic-service.default.svc.cluster.local:9200"
+#  elasticsearch_hosts: "10-64-1-11.default.pod.cluster.local:9200"
+  elasticsearch_hosts: "http://elastic-service.default.svc.cluster.local:9200"
+  server.basePath: "/kib"
+  server.rewriteBasePath: "true"

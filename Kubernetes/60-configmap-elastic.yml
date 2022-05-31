@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elastic-configmap
+data:
+  cluster.name: es-docker-cluster
+  es_java_opts: "-Xms512m -Xmx512m"

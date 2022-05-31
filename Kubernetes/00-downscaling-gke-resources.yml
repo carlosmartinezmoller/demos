@@ -1,0 +1,18 @@
+# https://cloud.google.com/kubernetes-engine/docs/how-to/small-cluster-tuning
+apiVersion: scalingpolicy.kope.io/v1alpha1
+kind: ScalingPolicy
+metadata:
+  name: fluentd-gcp-scaling-policy
+  namespace: kube-system
+spec:
+  containers:
+  - name: fluentd-gcp
+    resources:
+      requests:
+      - resource: cpu
+        base: "100m"
+      - resource: memory
+        base: "700M"
+      limits:
+      - resource: memory
+        base: "1G"

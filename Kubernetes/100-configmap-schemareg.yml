@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: schemareg-configmap
+data:
+  schema_registry_host_name: "schemareg-statefulset-0"
+  # See issue: https://github.com/confluentinc/schema-registry/issues/648
+  #  schema_registry_kafkastore_connection_url: "zookeeper-service.default.svc.cluster.local:2181"
+  schema_registry_kafkastore_bootstrap_servers: "PLAINTEXT://kafka-service.default.svc.cluster.local:9092"

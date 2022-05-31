@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elastic-statefulset
+spec:
+  selector:
+    matchLabels:
+      app: elastic
+  replicas: 1
+  serviceName: elastic-service
+  template:
+    metadata:
+      labels:
+        app: elastic
+    spec:
+      initContainers:
+      - name: ulimit
+        image: busybox
+        command:
+        - sh
+        - -c
+        - ulimit -n 65536
+        securityContext:
+          privileged: true
+      - name: vm-max-map-count
+        image: busybox
+        command:
+        - sysctl
+        - -w
+        - vm.max_map_count=262144
+        securityContext:
+          privileged: true
+      - name: volume-permission
+        image: busybox
+        command:
+        - sh
+        - -c
+        - chown -R 1000:1000 /usr/share/elasticsearch/data
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: elastic-volume
+          mountPath: /usr/share/elasticsearch/data
+      containers:
+      - name: elastic-container
+        image: elasticsearch:7.17.3
+        env:
+          - name: node.name
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: cluster.initial_master_nodes
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: cluster.name
+            valueFrom:
+              configMapKeyRef:
+                key: cluster.name
+                name: elastic-configmap
+          - name: ES_JAVA_OPTS
+            valueFrom:
+              configMapKeyRef:
+                key: es_java_opts
+                name: elastic-configmap
+        ports:
+        - containerPort: 9200
+          name: elastic-port
+        volumeMounts:
+        - name: elastic-volume
+          mountPath: /usr/share/elasticsearch/data
+        resources:
+          requests:
+            memory: "300M"
+            cpu: "100m"
+          limits:
+            memory: "3G"
+            cpu: "2000m"
+        livenessProbe:
+          exec:
+            command: 
+              - sh
+              - -c
+              - |
+                curl -XGET -s -k --fail http://127.0.0.1:9200/_cluster/health | egrep -o "status[^,]*" | egrep "yellow|green"
+          initialDelaySeconds: 60
+          periodSeconds: 300
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command: 
+              - sh
+              - -c
+              - |
+                curl -XGET -s -k --fail http://127.0.0.1:9200/_cluster/health | egrep -o "status[^,]*" | egrep "yellow|green"
+          initialDelaySeconds: 30
+          periodSeconds: 300
+          timeoutSeconds: 10
+      volumes:
+      - name: elastic-volume
+        persistentVolumeClaim:
+          claimName: elastic-claim

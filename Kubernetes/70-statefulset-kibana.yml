@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kibana-statefulset
+spec:
+  selector:
+    matchLabels:
+      app: kibana
+  replicas: 1
+  serviceName: kibana-service
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+      - name: kibana-container
+        image: kibana:7.17.3
+        env:
+          - name: SERVER_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: ELASTICSEARCH_URL
+            valueFrom:
+              configMapKeyRef:
+                key: elasticsearch_hosts
+                name: kibana-configmap
+          - name: ELASTICSEARCH_HOSTS
+            valueFrom:
+              configMapKeyRef:
+                key: elasticsearch_hosts
+                name: kibana-configmap
+          - name: SERVER_BASEPATH
+            valueFrom:
+              configMapKeyRef:
+                key: server.basePath
+                name: kibana-configmap
+          - name: SERVER_REWRITEBASEPATH
+            valueFrom:
+              configMapKeyRef:
+                key: server.rewriteBasePath
+                name: kibana-configmap
+        ports:
+        - containerPort: 5601
+          name: kibana-port
+        resources:
+          requests:
+            memory: "300M"
+            cpu: "50m"
+          limits:
+            memory: "2G"
+            cpu: "2000m"
+        livenessProbe:
+          exec:
+            command:
+             - bash
+             - "-c"
+             - |
+               curl http://localhost:5601/kib/api/status |  egrep -o "state[^,]*" | head -1 | egrep "green|yellow"
+          initialDelaySeconds: 30
+          periodSeconds: 300
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet: 
+            path: /kib/api/status
+            port: 5601
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 300
+          timeoutSeconds: 10

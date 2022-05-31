@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zookeeper-configmap
+data:
+  zookeeper_client_port: "2181"
+  zookeeper_tick_time: "2000"
+  zoo_4lw_commands_whitelist: rwok
+  # The above may not work as of https://github.com/confluentinc/cp-docker-images/issues/827
+  kafka_opts: "-Dzookeeper.4lw.commands.whitelist=*"

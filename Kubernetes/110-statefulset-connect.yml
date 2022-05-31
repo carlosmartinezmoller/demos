@@ -1,0 +1,158 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: connect-statefulset
+spec:
+  selector:
+    matchLabels:
+      app: connect
+  replicas: 1
+  serviceName: connect-service
+  template:
+    metadata:
+      labels:
+        app: connect
+    spec:
+      containers:
+      - name: connect-container
+        image: confluentinc/cp-kafka-connect:5.4.1
+        env:
+          - name: CONNECT_BOOTSTRAP_SERVERS
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_BOOTSTRAP_SERVERS
+                name: connect-configmap
+          - name: CONNECT_REST_ADVERTISED_HOST_NAME
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_REST_ADVERTISED_HOST_NAME
+                name: connect-configmap
+          - name: CONNECT_REST_ADVERTISED_HOST_NAME
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_REST_ADVERTISED_HOST_NAME
+                name: connect-configmap
+          - name: CONNECT_REST_PORT
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_REST_PORT
+                name: connect-configmap
+          - name: CONNECT_GROUP_ID
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_GROUP_ID
+                name: connect-configmap
+          - name: CONNECT_CONFIG_STORAGE_TOPIC
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_CONFIG_STORAGE_TOPIC
+                name: connect-configmap
+          - name: CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR
+                name: connect-configmap
+          - name: CONNECT_OFFSET_FLUSH_INTERVAL_MS
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_OFFSET_FLUSH_INTERVAL_MS
+                name: connect-configmap
+          - name: CONNECT_OFFSET_STORAGE_TOPIC
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_OFFSET_STORAGE_TOPIC
+                name: connect-configmap
+          - name: CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR
+                name: connect-configmap
+          - name: CONNECT_STATUS_STORAGE_TOPIC
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_STATUS_STORAGE_TOPIC
+                name: connect-configmap
+          - name: CONNECT_STATUS_STORAGE_REPLICATION_FACTOR
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_STATUS_STORAGE_REPLICATION_FACTOR
+                name: connect-configmap
+          - name: CONNECT_KEY_CONVERTER
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_KEY_CONVERTER
+                name: connect-configmap
+          - name: CONNECT_VALUE_CONVERTER
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_VALUE_CONVERTER
+                name: connect-configmap
+          - name: CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
+                name: connect-configmap
+          - name: CONNECT_INTERNAL_KEY_CONVERTER
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_INTERNAL_KEY_CONVERTER
+                name: connect-configmap
+          - name: CONNECT_INTERNAL_VALUE_CONVERTER
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_INTERNAL_VALUE_CONVERTER
+                name: connect-configmap
+          - name: CONNECT_ZOOKEEPER_CONNECT
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_ZOOKEEPER_CONNECT
+                name: connect-configmap
+          - name: CONNECT_PLUGIN_PATH
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_PLUGIN_PATH
+                name: connect-configmap
+          - name: CONNECT_LOG4J_LOGGERS
+            valueFrom:
+              configMapKeyRef:
+                key: CONNECT_LOG4J_LOGGERS
+                name: connect-configmap
+          - name: KAFKA_HEAP_OPTS
+            valueFrom:
+              configMapKeyRef:
+                key: KAFKA_HEAP_OPTS
+                name: connect-configmap
+        ports:
+        - containerPort: 8083
+          name: connect-port
+        resources:
+          requests:
+            memory: "300M"
+            cpu: "50m"
+          limits:
+            memory: "2G"
+            cpu: "2000m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: connect-port
+            scheme: HTTP
+          initialDelaySeconds: 90
+          periodSeconds: 300
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: connect-port
+            scheme: HTTP
+          initialDelaySeconds: 90
+          periodSeconds: 300
+          timeoutSeconds: 10
+        volumeMounts:
+        - name: connect-volume
+          mountPath: /plugins
+      volumes:
+      - name: connect-volume
+        persistentVolumeClaim:
+          claimName: connect-claim
+
