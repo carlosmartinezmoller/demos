@@ -14,17 +14,6 @@ spec:
         app: flink
     spec:
       initContainers:
-      - name: volume-libraries-permission
-        image: busybox
-        command:
-        - sh
-        - -c
-        - chown -R 9999:9999 /opt/flink/lib
-        securityContext:
-          privileged: true
-        volumeMounts:
-        - name: flink-libraries-volume
-          mountPath: /opt/flink/lib
       - name: volume-myjars-permission
         image: busybox
         command:
@@ -66,8 +55,6 @@ spec:
         volumeMounts:
         - name: flink-config-volume
           mountPath: /opt/flink/conf
-        - name: flink-libraries-volume
-          mountPath: /opt/flink/lib
         - name: flink-myjars-volume
           mountPath: /myjars
         - name: flink-savepoints-volume
@@ -97,8 +84,6 @@ spec:
         volumeMounts:
         - name: flink-config-volume
           mountPath: /opt/flink/conf/
-        - name: flink-libraries-volume
-          mountPath: /opt/flink/lib
         - name: flink-myjars-volume
           mountPath: /myjars
         - name: flink-savepoints-volume
@@ -121,9 +106,6 @@ spec:
             path: flink-conf.yaml
           - key: log4j-console.properties
             path: log4j-console.properties
-      - name: flink-libraries-volume
-        persistentVolumeClaim:
-          claimName: flink-libraries-claim
       - name: flink-myjars-volume
         persistentVolumeClaim:
           claimName: flink-myjars-claim

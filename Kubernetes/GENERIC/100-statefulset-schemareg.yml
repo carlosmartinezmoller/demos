@@ -40,14 +40,14 @@ spec:
         livenessProbe:
           tcpSocket:
             port: schemareg-port
-          initialDelaySeconds: 90
-          periodSeconds: 300
+          initialDelaySeconds: 30
+          periodSeconds: 30
           timeoutSeconds: 5
         readinessProbe:
           httpGet:
             path: /v1/metadata/id
             port: schemareg-port
             scheme: HTTP
-          initialDelaySeconds: 90
-          periodSeconds: 300
+          initialDelaySeconds: 30
+          periodSeconds: 30
           timeoutSeconds: 10

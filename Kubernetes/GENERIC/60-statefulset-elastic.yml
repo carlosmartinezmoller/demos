@@ -84,7 +84,7 @@ spec:
               - |
                 curl -XGET -s -k --fail http://127.0.0.1:9200/_cluster/health | egrep -o "status[^,]*" | egrep "yellow|green"
           initialDelaySeconds: 60
-          periodSeconds: 300
+          periodSeconds: 30
           timeoutSeconds: 5
         readinessProbe:
           exec:
@@ -94,7 +94,7 @@ spec:
               - |
                 curl -XGET -s -k --fail http://127.0.0.1:9200/_cluster/health | egrep -o "status[^,]*" | egrep "yellow|green"
           initialDelaySeconds: 30
-          periodSeconds: 300
+          periodSeconds: 30
           timeoutSeconds: 10
       volumes:
       - name: elastic-volume

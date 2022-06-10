@@ -13,6 +13,18 @@ spec:
       labels:
         app: kafka
     spec:
+      initContainers:
+      - name: volume-clean-lostfound
+        image: busybox
+        command:
+        - sh
+        - -c
+        - rm -rf /var/lib/kafka/data/lost+found
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: kafka-volume
+          mountPath: /var/lib/kafka/data
       containers:
       - name: kafka-container
         image: confluentinc/cp-kafka:5.4.1
@@ -73,17 +85,17 @@ spec:
           exec:
             command: ['/bin/bash', '-c', 'kafka-consumer-groups --list --bootstrap-server localhost:9092 | head -1']
           initialDelaySeconds: 30
-          periodSeconds: 300
+          periodSeconds: 60
           timeoutSeconds: 5
         readinessProbe:
           exec:
             command: ['/bin/bash', '-c', 'kafka-consumer-groups --list --bootstrap-server localhost:9092 | head -1']
           initialDelaySeconds: 30
-          periodSeconds: 300
+          periodSeconds: 60
           timeoutSeconds: 10
         volumeMounts:
         - name: kafka-volume
-          mountPath: /var/lib/kafka
+          mountPath: /var/lib/kafka/data
       volumes:
       - name: kafka-volume
         persistentVolumeClaim:

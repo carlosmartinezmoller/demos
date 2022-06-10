@@ -51,18 +51,23 @@ spec:
           exec:
             command: ['/bin/bash', '-c', 'echo "ruok" | nc -w 2 localhost 2181 | grep imok']
           initialDelaySeconds: 30
-          periodSeconds: 300
+          periodSeconds: 30
           timeoutSeconds: 5
         readinessProbe:
           exec:
             command: ['/bin/bash', '-c', 'echo "ruok" | nc -w 2 localhost 2181 | grep imok']
           initialDelaySeconds: 30
-          periodSeconds: 300
+          periodSeconds: 30
           timeoutSeconds: 10
         volumeMounts:
-        - name: zookeeper-volume
+        - name: zookeeper-volume-data
           mountPath: /var/lib/zookeeper/data
+        - name: zookeeper-volume-log
+          mountPath: /var/lib/zookeeper/log
       volumes:
-      - name: zookeeper-volume
+      - name: zookeeper-volume-data
         persistentVolumeClaim:
-          claimName: zookeeper-claim
+          claimName: zookeeper-claim-data
+      - name: zookeeper-volume-log
+        persistentVolumeClaim:
+          claimName: zookeeper-claim-log

@@ -77,7 +77,7 @@ spec:
              - |
                nodetool status | grep -E "^UN\\s+${POD_IP}"
           initialDelaySeconds: 60
-          periodSeconds: 300
+          periodSeconds: 30
           timeoutSeconds: 5
         readinessProbe:
           exec:
@@ -87,7 +87,7 @@ spec:
              - |
                nodetool status | grep -E "^UN\\s+${POD_IP}"
           initialDelaySeconds: 30
-          periodSeconds: 300
+          periodSeconds: 30
           timeoutSeconds: 10
       volumes:
       - name: cassandra-volume

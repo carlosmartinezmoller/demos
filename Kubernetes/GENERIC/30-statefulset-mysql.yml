@@ -54,7 +54,7 @@ spec:
           exec:
             command: ["mysqladmin", "ping"]
           initialDelaySeconds: 30
-          periodSeconds: 300
+          periodSeconds: 30
           timeoutSeconds: 5
         readinessProbe:
           exec:
@@ -66,7 +66,7 @@ spec:
 #            command: ["mysql", "-h", "127.0.0.1", "-e", "exit","-u","$(MYSQL_USER)","-pwelcome1"]
 #            command: 
           initialDelaySeconds: 30
-          periodSeconds: 300
+          periodSeconds: 30
           timeoutSeconds: 10
       volumes:
       - name: mysql-volume

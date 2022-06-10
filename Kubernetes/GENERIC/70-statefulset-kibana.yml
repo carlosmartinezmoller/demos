@@ -59,7 +59,7 @@ spec:
              - |
                curl http://localhost:5601/kib/api/status |  egrep -o "state[^,]*" | head -1 | egrep "green|yellow"
           initialDelaySeconds: 30
-          periodSeconds: 300
+          periodSeconds: 30
           timeoutSeconds: 5
         readinessProbe:
           httpGet: 
@@ -67,5 +67,5 @@ spec:
             port: 5601
             scheme: HTTP
           initialDelaySeconds: 30
-          periodSeconds: 300
+          periodSeconds: 30
           timeoutSeconds: 10
