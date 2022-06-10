@@ -21,10 +21,10 @@ I installed all of this on clusters composed of 3 nodes, wich 2CPUs and 4G each.
 * 40: redis
 * 50: cassandra
 * 60: elasticsearch
-* 70: kibana (To connect to elasticsearch implemented on step 60): Take into account that server.rewriteBasePath. The idea is to access via LoadBalancer. If you want direct access or proxy access remove this setup.
+* 70: kibana (To connect to elasticsearch implemented on step 60): A proxy script is provided to start a proxy to access Kibana with a local browser
 * 80: zookeeper
 * 90: Kafka (Uses zookeeper created in step 80)
 * 100: Schema Registry (Uses Kafka created on step 90)
 * 110: Kafka Connect (Uses Kafka created on step 90)
-* 120: Flink: I implement jobmanager and taskmanager on the same POD for simplicity, to share a single volume to upload libraries
+* 120: Flink: I implement jobmanager and taskmanager on the same POD for simplicity, to share a single volume to upload libraries: A proxy script is provided to start a proxy to access Flin UI with a local browser
 * 1000: Ingress rules to access Kibana. The path will be http://<LoadBalancerIP>/kib
