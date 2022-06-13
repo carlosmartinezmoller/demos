@@ -31,16 +31,16 @@ spec:
               configMapKeyRef:
                 key: elasticsearch_hosts
                 name: kibana-configmap
-          - name: SERVER_BASEPATH
-            valueFrom:
-              configMapKeyRef:
-                key: server.basePath
-                name: kibana-configmap
-          - name: SERVER_REWRITEBASEPATH
-            valueFrom:
-              configMapKeyRef:
-                key: server.rewriteBasePath
-                name: kibana-configmap
+#          - name: SERVER_BASEPATH
+#            valueFrom:
+#              configMapKeyRef:
+#                key: server.basePath
+#                name: kibana-configmap
+#          - name: SERVER_REWRITEBASEPATH
+#            valueFrom:
+#              configMapKeyRef:
+#                key: server.rewriteBasePath
+#                name: kibana-configmap
         ports:
         - containerPort: 5601
           name: kibana-port
@@ -57,7 +57,7 @@ spec:
              - bash
              - "-c"
              - |
-               curl http://localhost:5601/kib/api/status |  egrep -o "state[^,]*" | head -1 | egrep "green|yellow"
+               curl http://localhost:5601/api/status |  egrep -o "state[^,]*" | head -1 | egrep "green|yellow"
           initialDelaySeconds: 30
           periodSeconds: 30
           timeoutSeconds: 5
