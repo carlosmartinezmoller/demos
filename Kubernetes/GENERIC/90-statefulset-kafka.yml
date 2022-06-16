@@ -84,9 +84,9 @@ spec:
         livenessProbe:
           exec:
             command: ['/bin/bash', '-c', 'kafka-consumer-groups --list --bootstrap-server localhost:9092 | head -1']
-          initialDelaySeconds: 30
-          periodSeconds: 60
-          timeoutSeconds: 5
+          initialDelaySeconds: 600
+          periodSeconds: 300
+          timeoutSeconds: 10
         readinessProbe:
           exec:
             command: ['/bin/bash', '-c', 'kafka-consumer-groups --list --bootstrap-server localhost:9092 | head -1']

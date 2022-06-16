@@ -27,11 +27,6 @@ spec:
               configMapKeyRef:
                 key: CONNECT_REST_ADVERTISED_HOST_NAME
                 name: connect-configmap
-          - name: CONNECT_REST_ADVERTISED_HOST_NAME
-            valueFrom:
-              configMapKeyRef:
-                key: CONNECT_REST_ADVERTISED_HOST_NAME
-                name: connect-configmap
           - name: CONNECT_REST_PORT
             valueFrom:
               configMapKeyRef:

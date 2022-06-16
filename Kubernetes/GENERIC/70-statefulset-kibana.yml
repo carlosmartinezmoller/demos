@@ -63,7 +63,7 @@ spec:
           timeoutSeconds: 5
         readinessProbe:
           httpGet: 
-            path: /kib/api/status
+            path: /api/status
             port: 5601
             scheme: HTTP
           initialDelaySeconds: 30

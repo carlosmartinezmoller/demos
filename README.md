@@ -8,8 +8,8 @@ Scripts I have used to deploy many different services in GKE (Google) and OKE (O
 
 As of now the Kubernetes folder contains three subfolders:
 * GENERIC: Plenty of YML files to deploy all kind of services (mysql, cassandra, etc) They are not production ready. They are mainly used to test the Kubernetes cluster but they may be interesting to play with them to test features.
-* OKE: Some specific scripts to downsize the cluster and to setup INGRESS
-* GKE: Some specific scripts to downsize the cluster
+* OKE: Some specific scripts to downsize the cluster, to setup INGRESS, and to create a Storage Type which guarantees that Pods and VolumeClaims are on the same AD
+* GKE: Some specific scripts to downsize the cluster and to create a Storage Type which guarantees that Pods and VolumeClaims are on the same zone
 
 The main differences within OKE and GKE:
 * Billing model
